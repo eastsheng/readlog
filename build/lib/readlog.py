@@ -12,7 +12,9 @@ import logging
 import sys
 
 def __version__():
-	version = "1.2.3"
+	with open('./__init__.py', 'r', encoding='utf-8') as f:
+	    data = json.load(f)
+	version = data["version"]
 	return version
 
 def print_readlog():
@@ -135,10 +137,19 @@ class ReadLog(object):
 				try:
 
 					thermo_col = np.loadtxt(LogFile,dtype="str",encoding='utf-8',skiprows=thermou_list[i]-1,max_rows=1)
-					thermo_data = np.loadtxt(LogFile,skiprows=thermou_list[i],max_rows=n_line,encoding='utf-8')#.reshape((1,-1))
+
+					try:
+						thermo_data = np.loadtxt(LogFile,skiprows=thermou_list[i],max_rows=n_line,encoding='utf-8')#.reshape((1,-1))
+					except:				
+						thermo_data = np.loadtxt(LogFile,skiprows=thermou_list[i]+1,max_rows=n_line,encoding='utf-8')#.reshape((1,-1))
+				
 				except:
 					thermo_col = np.loadtxt(LogFile,dtype="str",encoding='gb18030',skiprows=thermou_list[i]-1,max_rows=1)
-					thermo_data = np.loadtxt(LogFile,skiprows=thermou_list[i],max_rows=n_line,encoding='gb18030')#.reshape((1,-1))
+
+					try:
+						thermo_data = np.loadtxt(LogFile,skiprows=thermou_list[i],max_rows=n_line,encoding='gb18030')#.reshape((1,-1))
+					except:				
+						thermo_data = np.loadtxt(LogFile,skiprows=thermou_list[i]+1,max_rows=n_line,encoding='gb18030')#.reshape((1,-1))
 					
 				pd_thermo = pd.DataFrame(thermo_data,columns=thermo_col)
 			else:
@@ -204,11 +215,11 @@ class Tee:
 		for f in self.files:
 			f.flush()
 
-def print_log(log_file_name):
+def print_log(log_file_name,write="a"):
 	current_time = datetime.now().strftime("%Y-%m-%d, %H:%M:%S")
 	log_file_name = f"{log_file_name}"
 	logging.basicConfig(filename=log_file_name, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-	log_file = open(log_file_name, 'a')
+	log_file = open(log_file_name, write)
 	sys.stdout = Tee(sys.stdout, log_file)
 	print("-"*100)
 	print("-"*100)
@@ -224,9 +235,10 @@ def print_log(log_file_name):
 
 if __name__ == '__main__':
 
-	logfile = "1_hydrate_dissociation_log.lammps"
-	nf_log = 0 # The number of logs in logfile
+	logfile = "1_4DPrintingHydrogel_log.lammps"
+	nf_log = 3 # The number of logs in logfile
 	rl = ReadLog(logfile) 
-	rl.ReadThermo(nf_log)
-	rl.ReadRunTime()
-	rl.ReadTimestep()
+	df = rl.ReadThermo(nf_log)
+	print(df)
+	# rl.ReadRunTime()
+	# rl.ReadTimestep()

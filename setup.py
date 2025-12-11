@@ -5,14 +5,17 @@ pip install .
 
 # from distutils.core import setup
 from setuptools import setup, find_packages
-from src.readlog import __version__
+import json
+
 with open("README.md", "r") as f:
     long_description = f.read()
 
 with open("requirements.txt","r") as f:
     required = f.read().splitlines()
 
-version = __version__()
+with open('./src/__init__.py', 'r', encoding='utf-8') as f:
+    data = json.load(f)
+version = data["version"]
 
 setup(
 name         = 'readlog',

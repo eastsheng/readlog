@@ -12,7 +12,9 @@ import logging
 import sys
 
 def __version__():
-	version = "1.2.3"
+	with open('./__init__.py', 'r', encoding='utf-8') as f:
+	    data = json.load(f)
+	version = data["version"]
 	return version
 
 def print_readlog():
@@ -213,11 +215,11 @@ class Tee:
 		for f in self.files:
 			f.flush()
 
-def print_log(log_file_name):
+def print_log(log_file_name,write="a"):
 	current_time = datetime.now().strftime("%Y-%m-%d, %H:%M:%S")
 	log_file_name = f"{log_file_name}"
 	logging.basicConfig(filename=log_file_name, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-	log_file = open(log_file_name, 'a')
+	log_file = open(log_file_name, write)
 	sys.stdout = Tee(sys.stdout, log_file)
 	print("-"*100)
 	print("-"*100)

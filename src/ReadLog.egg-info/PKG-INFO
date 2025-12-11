@@ -1,4 +1,4 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.4
 Name: readlog
 Version: 1.2.3
 Summary: Read themo info from lammps output file or log file
@@ -9,6 +9,13 @@ Description-Content-Type: text/markdown
 Requires-Dist: matplotlib>=3.7.2
 Requires-Dist: numpy>=1.26.0
 Requires-Dist: pandas>=2.0.3
+Dynamic: author
+Dynamic: author-email
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: requires-dist
+Dynamic: summary
 
 ## readlog
 
